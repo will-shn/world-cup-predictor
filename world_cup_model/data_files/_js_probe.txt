@@ -1,0 +1,668 @@
+﻿--- buildTeam at 14144 ---
+buildTeams
+    },
+    {
+      file: 'tournaments.tsv',
+      func: buildTournaments
+    },
+    {
+      file: 'menu.tsv',
+      func: buildMenu
+    },
+    {
+      file: 'en.labels.tsv',
+      func: buildLabelDictionary
+    },
+    {
+      file: 'en.teams.tsv',
+      func: buildTeamDictionary
+    },
+    {
+      file: 'en.tournaments.tsv',
+      func: buildTournamentDictionary
+    }
+  ]
+};
+
+$(document).ready(handleReady);
+$(window).on('load', handleLoad);
+$(window).on('popstate', handlePopstate);
+$(window).resize(handleResize);
+window.addEventListener('orientationchange', handleResize, false);
+
+lo
+
+--- buildTeam at 14415 ---
+buildTeamDictionary
+    },
+    {
+      file: 'en.tournaments.tsv',
+      func: buildTournamentDictionary
+    }
+  ]
+};
+
+$(document).ready(handleReady);
+$(window).on('load', handleLoad);
+$(window).on('popstate', handlePopstate);
+$(window).resize(handleResize);
+window.addEventListener('orientationchange', handleResize, false);
+
+loadRequiredData();
+
+function loadRequiredData()
+{
+  $.ajaxSetup({ mimeType: "text/plain", timeout: 10000 });
+  ratingData.requiredData.forEach(function(data)
+  {
+    var request = $.ajax(data.file, { cache: false, complete: handleRequestComplete, success: handleRequestSuc
+
+--- buildTeam at 29695 ---
+buildTeams(data)
+{
+  ratingData.successor = { };
+  data.split('\n').forEach(function(line)
+  {
+    var values = line.split('\t');
+    ratingData.successor[values[0]] = values[1];
+  });
+}
+
+function buildTournaments(data)
+{
+  ratingData.tournamentMap = { };
+  data.split('\n').forEach(function(line)
+  {
+    var values = line.split('\t');
+    ratingData.tournamentMap[values.shift()] = values;
+  });
+}
+
+function buildMenu(data)
+{
+  ratingData.dataCache.menu = data;
+}
+
+function buildLabelDictionary(data)
+{
+  ratingData.labelDictionary = { };
+  data.split('\n').forEach(function(line)
+  {
+    var value
+
+--- buildTeam at 30392 ---
+buildTeamDictionary(data)
+{
+  ratingData.teamCode = { };
+  ratingData.teamDictionary = { };
+  ratingData.teamLocativeDictionary = { };
+  data.split('\n').forEach(function(line)
+  {
+    var values = line.split('\t');
+    var code = values.shift();
+    var matches = /(.*)_loc$/.exec(code);
+    if (matches)
+      ratingData.teamLocativeDictionary[matches[1]] = values;
+    else
+    {
+      ratingData.teamDictionary[code] = values;
+      ratingData.teamCode[pageName(values[0])] = code;
+    }
+  });
+}
+
+function buildTournamentDictionary(data)
+{
+  ratingData.tournamentCode = { };
+  ratingData.tourname
+
+--- teamDictionary at 27520 ---
+teamDictionary)
+    if (ratingData.teamDictionary.hasOwnProperty(labels))
+    {
+      var label = ratingData.teamDictionary[labels][ratingData.teamDictionary[labels].length - 1];
+      var width = textWidth(label);
+      if (width > maxWidth)
+      {
+        maxWidth = width;
+        maxLabel = label;
+      }
+      width = textWidth(label, undefined, true);
+      if (width > condWidth)
+      {
+        condWidth = width;
+        condLabel = label;
+      }
+    }
+  console.log('Max label ' + maxLabel + ' width ' + maxWidth + ' cond ' + condLabel + ' width ' + condWidth);
+  startRequest(ratingData
+
+--- teamDictionary at 27555 ---
+teamDictionary.hasOwnProperty(labels))
+    {
+      var label = ratingData.teamDictionary[labels][ratingData.teamDictionary[labels].length - 1];
+      var width = textWidth(label);
+      if (width > maxWidth)
+      {
+        maxWidth = width;
+        maxLabel = label;
+      }
+      width = textWidth(label, undefined, true);
+      if (width > condWidth)
+      {
+        condWidth = width;
+        condLabel = label;
+      }
+    }
+  console.log('Max label ' + maxLabel + ' width ' + maxWidth + ' cond ' + condLabel + ' width ' + condWidth);
+  startRequest(ratingData.currentPage, 0);
+}
+
+function start
+
+--- teamDictionary at 27629 ---
+teamDictionary[labels][ratingData.teamDictionary[labels].length - 1];
+      var width = textWidth(label);
+      if (width > maxWidth)
+      {
+        maxWidth = width;
+        maxLabel = label;
+      }
+      width = textWidth(label, undefined, true);
+      if (width > condWidth)
+      {
+        condWidth = width;
+        condLabel = label;
+      }
+    }
+  console.log('Max label ' + maxLabel + ' width ' + maxWidth + ' cond ' + condLabel + ' width ' + condWidth);
+  startRequest(ratingData.currentPage, 0);
+}
+
+function startRequest(page, count)
+{
+  if (page === undefined || count === undefined || 
+
+--- teamDictionary at 27663 ---
+teamDictionary[labels].length - 1];
+      var width = textWidth(label);
+      if (width > maxWidth)
+      {
+        maxWidth = width;
+        maxLabel = label;
+      }
+      width = textWidth(label, undefined, true);
+      if (width > condWidth)
+      {
+        condWidth = width;
+        condLabel = label;
+      }
+    }
+  console.log('Max label ' + maxLabel + ' width ' + maxWidth + ' cond ' + condLabel + ' width ' + condWidth);
+  startRequest(ratingData.currentPage, 0);
+}
+
+function startRequest(page, count)
+{
+  if (page === undefined || count === undefined || ratingData.requests[page] || ratin
+
+--- teamDictionary at 30462 ---
+teamDictionary = { };
+  ratingData.teamLocativeDictionary = { };
+  data.split('\n').forEach(function(line)
+  {
+    var values = line.split('\t');
+    var code = values.shift();
+    var matches = /(.*)_loc$/.exec(code);
+    if (matches)
+      ratingData.teamLocativeDictionary[matches[1]] = values;
+    else
+    {
+      ratingData.teamDictionary[code] = values;
+      ratingData.teamCode[pageName(values[0])] = code;
+    }
+  });
+}
+
+function buildTournamentDictionary(data)
+{
+  ratingData.tournamentCode = { };
+  ratingData.tournamentDictionary = { };
+  data.split('\n').forEach(function(line)
+  {
+    
+
+--- teamDictionary at 30792 ---
+teamDictionary[code] = values;
+      ratingData.teamCode[pageName(values[0])] = code;
+    }
+  });
+}
+
+function buildTournamentDictionary(data)
+{
+  ratingData.tournamentCode = { };
+  ratingData.tournamentDictionary = { };
+  data.split('\n').forEach(function(line)
+  {
+    var values = line.split('\t');
+    var code = values.shift();
+    ratingData.tournamentDictionary[code] = values;
+    ratingData.tournamentCode[pageName(values[0])] = code;
+  });
+}
+
+function pageName(text)
+{
+  return text ? text.replace(/ /g, '_').replace(/[├á├í├ó├ú├ñ├Ñ]/g, 'a').replace(/├º/g, 'c').replace(/[├¿├⌐├¬├½]/g, 'e').re
+
+--- teamDictionary at 31728 ---
+teamDictionary[ratingData.successor[team] || team][0]);
+  team = ratingData.teamDictionary[team];
+  team = fitText(teamGroup.columns[0].layout.width, team);
+  row.team = makeLink(page, team);
+  row.rating = fields[3];
+  row.rank_max = fields[4];
+  row.rating_max = fields[5];
+  row.rank_avg = fields[6];
+  row.rating_avg = fields[7];
+  row.rank_min = fields[8];
+  row.rating_min = fields[9];
+  row.rank_three_month_change = fields[10];
+  row.rating_three_month_change = fields[11];
+  row.rank_six_month_change = fields[12];
+  row.rating_six_month_change = fields[13];
+  row.rank_one_year_change = fie
+
+--- teamDictionary at 31804 ---
+teamDictionary[team];
+  team = fitText(teamGroup.columns[0].layout.width, team);
+  row.team = makeLink(page, team);
+  row.rating = fields[3];
+  row.rank_max = fields[4];
+  row.rating_max = fields[5];
+  row.rank_avg = fields[6];
+  row.rating_avg = fields[7];
+  row.rank_min = fields[8];
+  row.rating_min = fields[9];
+  row.rank_three_month_change = fields[10];
+  row.rating_three_month_change = fields[11];
+  row.rank_six_month_change = fields[12];
+  row.rating_six_month_change = fields[13];
+  row.rank_one_year_change = fields[14];
+  row.rating_one_year_change = fields[15];
+  row.rank_two_year_chan
+
+--- teamDictionary at 34014 ---
+teamDictionary[ratingData.successor[team1] || team1][0]);
+  team1 = ratingData.teamDictionary[team1];
+  team1 = fitText(width, team1);
+  var page2 = pageName(ratingData.teamDictionary[ratingData.successor[team2] || team2][0]);
+  team2 = ratingData.teamDictionary[team2];
+  team2 = fitText(width, team2);
+  return (page1 == ratingData.currentPage ? team1 : makeLink(page1, team1)) + '<br/>' + (page2 == ratingData.currentPage ? team2 : makeLink(page2, team2));
+}
+
+function formatTournament(tournament, venue, year, month, day)
+{
+  var layout = tournamentGroup.columns[0].layout;
+  if (!layout)
+    ret
+
+--- teamDictionary at 34093 ---
+teamDictionary[team1];
+  team1 = fitText(width, team1);
+  var page2 = pageName(ratingData.teamDictionary[ratingData.successor[team2] || team2][0]);
+  team2 = ratingData.teamDictionary[team2];
+  team2 = fitText(width, team2);
+  return (page1 == ratingData.currentPage ? team1 : makeLink(page1, team1)) + '<br/>' + (page2 == ratingData.currentPage ? team2 : makeLink(page2, team2));
+}
+
+function formatTournament(tournament, venue, year, month, day)
+{
+  var layout = tournamentGroup.columns[0].layout;
+  if (!layout)
+    return '';
+  var width = layout.width - (ratingData.currentLayout == 'normal' ? 20
+
+--- teamDictionary at 34183 ---
+teamDictionary[ratingData.successor[team2] || team2][0]);
+  team2 = ratingData.teamDictionary[team2];
+  team2 = fitText(width, team2);
+  return (page1 == ratingData.currentPage ? team1 : makeLink(page1, team1)) + '<br/>' + (page2 == ratingData.currentPage ? team2 : makeLink(page2, team2));
+}
+
+function formatTournament(tournament, venue, year, month, day)
+{
+  var layout = tournamentGroup.columns[0].layout;
+  if (!layout)
+    return '';
+  var width = layout.width - (ratingData.currentLayout == 'normal' ? 20 : 10);
+  month--;
+  var tournpages = new Array();
+  var tourns = ratingData.tournamentMap
+
+--- teamDictionary at 34262 ---
+teamDictionary[team2];
+  team2 = fitText(width, team2);
+  return (page1 == ratingData.currentPage ? team1 : makeLink(page1, team1)) + '<br/>' + (page2 == ratingData.currentPage ? team2 : makeLink(page2, team2));
+}
+
+function formatTournament(tournament, venue, year, month, day)
+{
+  var layout = tournamentGroup.columns[0].layout;
+  if (!layout)
+    return '';
+  var width = layout.width - (ratingData.currentLayout == 'normal' ? 20 : 10);
+  month--;
+  var tournpages = new Array();
+  var tourns = ratingData.tournamentMap.hasOwnProperty(tournament) ? ratingData.tournamentMap[tournament] : [ tourname
+
+--- teamDictionary at 36921 ---
+teamDictionary[ratingData.successor[venue] || venue][0]);
+    venue = ratingData.teamLocativeDictionary[venue] || ratingData.teamDictionary[venue].map(function(text) { return ratingData.labelDictionary.locativePreposition + ' ' + text; });
+    venue = fitText(width, venue);
+    result += venuepage == ratingData.currentPage ? venue : makeLink(venuepage, venue);
+  }
+  return result;
+}
+
+function formatChange(change)
+{
+  return (change > 0 ? '+' : change < 0 ? '&minus;' : '') + Math.abs(change) + '<br/>' + (change < 0 ? '+' : change > 0 ? '&minus;' : '') + Math.abs(change);
+}
+
+function pushMatchRo
+
+--- teamDictionary at 37046 ---
+teamDictionary[venue].map(function(text) { return ratingData.labelDictionary.locativePreposition + ' ' + text; });
+    venue = fitText(width, venue);
+    result += venuepage == ratingData.currentPage ? venue : makeLink(venuepage, venue);
+  }
+  return result;
+}
+
+function formatChange(change)
+{
+  return (change > 0 ? '+' : change < 0 ? '&minus;' : '') + Math.abs(change) + '<br/>' + (change < 0 ? '+' : change > 0 ? '&minus;' : '') + Math.abs(change);
+}
+
+function pushMatchRow(line)
+{
+  var fields = line.split('\t');
+  var row = { };
+  row.date = formatDate(fields[0], fields[1], fields[2]);
+  row.m
+
+--- teamDictionary at 53686 ---
+teamDictionary[ratingData.teamCode[page]]
+      : yearly ? [ ratingData.tournamentDictionary[ratingData.titleCode[page]][0] + ' ' + page ]
+      : ratingData.titleCode && ratingData.titleCode[page] ? ratingData.tournamentDictionary[ratingData.titleCode[page]]
+//    : ratingData.tournamentCode[page] ? ratingData.tournamentDictionary[ratingData.tournamentCode[page]]
+      : ratingData.labelDictionary[page] ? ratingData.labelDictionary[page] : [ page.replace(/_/g, ' ') ];
+    var prefix = ratingData.labelDictionary.mainTitle;
+    var year = !yearly && ratingData.pageYear && ratingData.pageYear[pa
+
+--- teamDictionary at 57110 ---
+teamDictionary[ratingData.teamCode[page]]
+//    : ratingData.tournamentCode[page] ? ratingData.tournamentDictionary[ratingData.tournamentCode[page]]
+      : [ page.replace(/_/g, ' ') ];
+    text = new Array();
+    ratingData.labelDictionary.matchSubtitle.forEach(function(ttl)
+    {
+      label.forEach(function(lbl)
+      {
+        text.push (lbl + ' ' + ttl);
+      });
+    });
+  }
+  else
+  {
+    text = new Array();
+    var subtitle = ratingData.labelDictionary[isFinalRatings() || isYearEndRatings() ? 'endSubtitle' : isStartingRatings() ? 'startSubtitle' : 'mainSubtitle'];
+    var date = isFina
+
+--- teamDictionary at 63685 ---
+teamDictionary[code][0].replace(/ /g, '&nbsp;') + '</span>:&nbsp;' + (!series.hasOwnProperty('increase') ? '' : increase >= 0 ? '+' + increase + '&nbsp;' : '&minus;' + -increase + '&nbsp;') + series.yHTML + (highlight ? '</b>' : '');
+  }
+  return ratingData.legendText = html;
+}
+
+function dateStr(year, month, day)
+{
+  var ds = year;
+  if (month > 0)
+  {
+    ds += '-';
+    if (month <= 9)
+      ds += '0';
+    ds += month;
+    if (day > 0)
+    {
+      ds += '-';
+      if (day <= 9)
+        ds += '0';
+      ds += day;
+    }
+  }
+  return ds;
+}
+
+function dateString(date)
+{
+  var ds = date.getFullYea
+
+--- teamDictionary at 87739 ---
+teamDictionary[page == 'Germany' ? 'DD' : page == 'North_Vietnam' ? 'VN' : page == 'North_Yemen' ? 'YE' : page == 'Vietnam' ? 'NV' : page == 'Yemen' ? 'NY' : 'DE'][0]);
+    item.css('display', '');
+    item.removeData('hide');
+  }
+  else
+  {
+    item.css('display', 'none');
+    item.data('hide', true);
+  }
+  if (!isHockey())
+  {
+    item = menu.find('#itempr2');
+    if (page == 'Germany')
+    {
+      var a = item.children('a');
+      a.attr('href', 'Saar');
+      a.attr('onclick', 'handleLink(\'Saar\'); return false;');
+      a.text(ratingData.teamDictionary['SP'][0]);
+      item.css('display'
+
+--- teamDictionary at 88289 ---
+teamDictionary['SP'][0]);
+      item.css('display', '');
+      item.removeData('hide');
+    }
+    else
+    {
+      item.css('display', 'none');
+      item.data('hide', true);
+    }
+  }
+  var c = menu.find('#itemdropdownColumns');
+  if (isInfo())
+  {
+    c.css('display', 'none');
+    c.data('hide', true);
+  }
+  else
+  {
+    //c.css('display', '');
+    c.removeData('hide');
+console.log('um show ' + c.prop('id'));
+  }
+  updateMenuItems(menu);
+}
+
+function finishMenu(menu)
+{
+  if (!ratingData.finishMenuLater)
+    return;
+  var bottom = menu.height();
+  if (!bottom)
+    return;
+  delete ratingData.f
+
+--- pageName at 30849 ---
+pageName(values[0])] = code;
+    }
+  });
+}
+
+function buildTournamentDictionary(data)
+{
+  ratingData.tournamentCode = { };
+  ratingData.tournamentDictionary = { };
+  data.split('\n').forEach(function(line)
+  {
+    var values = line.split('\t');
+    var code = values.shift();
+    ratingData.tournamentDictionary[code] = values;
+    ratingData.tournamentCode[pageName(values[0])] = code;
+  });
+}
+
+function pageName(text)
+{
+  return text ? text.replace(/ /g, '_').replace(/[├á├í├ó├ú├ñ├Ñ]/g, 'a').replace(/├º/g, 'c').replace(/[├¿├⌐├¬├½]/g, 'e').replace(/[├¼├¡├«├»]/g, 'i').replace(/[├▓├│├┤├╡├╢]/g, 'o').r
+
+--- pageName at 31206 ---
+pageName(values[0])] = code;
+  });
+}
+
+function pageName(text)
+{
+  return text ? text.replace(/ /g, '_').replace(/[├á├í├ó├ú├ñ├Ñ]/g, 'a').replace(/├º/g, 'c').replace(/[├¿├⌐├¬├½]/g, 'e').replace(/[├¼├¡├«├»]/g, 'i').replace(/[├▓├│├┤├╡├╢]/g, 'o').replace(/[├╣├║├╗├╝]/g, 'u').replace(/[├▒]/g, 'n') : undefined;
+}
+
+function pushRatingRow(line)
+{
+  var fields = line.split('\t');
+  var row = { };
+  row.local = fields[0];
+  row[isGlobal() ? 'rank' : 'global'] = fields[1];
+  var team = fields[2];
+  var page = pageName(ratingData.teamDictionary[ratingData.successor[team] || team][0]);
+  team = ratingData.te
+
+--- pageName at 31253 ---
+pageName(text)
+{
+  return text ? text.replace(/ /g, '_').replace(/[├á├í├ó├ú├ñ├Ñ]/g, 'a').replace(/├º/g, 'c').replace(/[├¿├⌐├¬├½]/g, 'e').replace(/[├¼├¡├«├»]/g, 'i').replace(/[├▓├│├┤├╡├╢]/g, 'o').replace(/[├╣├║├╗├╝]/g, 'u').replace(/[├▒]/g, 'n') : undefined;
+}
+
+function pushRatingRow(line)
+{
+  var fields = line.split('\t');
+  var row = { };
+  row.local = fields[0];
+  row[isGlobal() ? 'rank' : 'global'] = fields[1];
+  var team = fields[2];
+  var page = pageName(ratingData.teamDictionary[ratingData.successor[team] || team][0]);
+  team = ratingData.teamDictionary[team];
+  team = fitText(teamGroup.
+
+--- pageName at 31708 ---
+pageName(ratingData.teamDictionary[ratingData.successor[team] || team][0]);
+  team = ratingData.teamDictionary[team];
+  team = fitText(teamGroup.columns[0].layout.width, team);
+  row.team = makeLink(page, team);
+  row.rating = fields[3];
+  row.rank_max = fields[4];
+  row.rating_max = fields[5];
+  row.rank_avg = fields[6];
+  row.rating_avg = fields[7];
+  row.rank_min = fields[8];
+  row.rating_min = fields[9];
+  row.rank_three_month_change = fields[10];
+  row.rating_three_month_change = fields[11];
+  row.rank_six_month_change = fields[12];
+  row.rating_six_month_change = fields[13];
+  row.rank_o
+
+--- pageName at 33994 ---
+pageName(ratingData.teamDictionary[ratingData.successor[team1] || team1][0]);
+  team1 = ratingData.teamDictionary[team1];
+  team1 = fitText(width, team1);
+  var page2 = pageName(ratingData.teamDictionary[ratingData.successor[team2] || team2][0]);
+  team2 = ratingData.teamDictionary[team2];
+  team2 = fitText(width, team2);
+  return (page1 == ratingData.currentPage ? team1 : makeLink(page1, team1)) + '<br/>' + (page2 == ratingData.currentPage ? team2 : makeLink(page2, team2));
+}
+
+function formatTournament(tournament, venue, year, month, day)
+{
+  var layout = tournamentGroup.columns[0].layout;
+  
+
+--- pageName at 34163 ---
+pageName(ratingData.teamDictionary[ratingData.successor[team2] || team2][0]);
+  team2 = ratingData.teamDictionary[team2];
+  team2 = fitText(width, team2);
+  return (page1 == ratingData.currentPage ? team1 : makeLink(page1, team1)) + '<br/>' + (page2 == ratingData.currentPage ? team2 : makeLink(page2, team2));
+}
+
+function formatTournament(tournament, venue, year, month, day)
+{
+  var layout = tournamentGroup.columns[0].layout;
+  if (!layout)
+    return '';
+  var width = layout.width - (ratingData.currentLayout == 'normal' ? 20 : 10);
+  month--;
+  var tournpages = new Array();
+  var tourns = rati
+
+--- pageName at 36901 ---
+pageName(ratingData.teamDictionary[ratingData.successor[venue] || venue][0]);
+    venue = ratingData.teamLocativeDictionary[venue] || ratingData.teamDictionary[venue].map(function(text) { return ratingData.labelDictionary.locativePreposition + ' ' + text; });
+    venue = fitText(width, venue);
+    result += venuepage == ratingData.currentPage ? venue : makeLink(venuepage, venue);
+  }
+  return result;
+}
+
+function formatChange(change)
+{
+  return (change > 0 ? '+' : change < 0 ? '&minus;' : '') + Math.abs(change) + '<br/>' + (change < 0 ? '+' : change > 0 ? '&minus;' : '') + Math.abs(change);
+}
+
+
+
+--- menu.tsv at 14254 ---
+menu.tsv',
+      func: buildMenu
+    },
+    {
+      file: 'en.labels.tsv',
+      func: buildLabelDictionary
+    },
+    {
+      file: 'en.teams.tsv',
+      func: buildTeamDictionary
+    },
+    {
+      file: 'en.tournaments.tsv',
+      func: buildTournamentDictionary
+    }
+  ]
+};
+
+$(document).ready(handleReady);
+$(window).on('load', handleLoad);
+$(window).on('popstate', handlePopstate);
+$(window).resize(handleResize);
+window.addEventListener('orientationchange', handleResize, false);
+
+loadRequiredData();
+
+function loadRequiredData()
+{
+  $.ajaxSetup({ mimeType: "text/plain", timeout: 10000 });
+  
+
