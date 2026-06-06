@@ -16,7 +16,6 @@ import os
 import time
 from pathlib import Path
 
-import altair as alt
 import pandas as pd
 import streamlit as st
 
@@ -129,35 +128,11 @@ def load_market_benchmark(
     )
 
 
-def model_vs_market_chart(comparison: pd.DataFrame) -> alt.Chart:
-    """Grouped (side-by-side) bars for model vs market win probabilities."""
-    chart_data = comparison[["team", "model_prob", "market_prob"]].melt(
-        id_vars="team",
-        value_vars=["model_prob", "market_prob"],
-        var_name="source",
-        value_name="probability_pct",
-    )
-    chart_data["probability_pct"] = chart_data["probability_pct"] * 100
-    chart_data["source"] = chart_data["source"].map(
-        {"model_prob": "Model", "market_prob": "Market"}
-    )
-    team_order = comparison["team"].tolist()
-
-    return (
-        alt.Chart(chart_data)
-        .mark_bar()
-        .encode(
-            x=alt.X("team:N", sort=team_order, title=None, axis=alt.Axis(labelAngle=-45)),
-            y=alt.Y("probability_pct:Q", title="Win probability (%)"),
-            color=alt.Color(
-                "source:N",
-                title=None,
-                scale=alt.Scale(domain=["Model", "Market"], range=["#0068C9", "#83C9FF"]),
-            ),
-            xOffset=alt.XOffset("source:N"),
-        )
-        .properties(height=380)
-    )
+def model_vs_market_chart_data(comparison: pd.DataFrame) -> pd.DataFrame:
+    """Wide-format data for grouped model vs market win-probability bars."""
+    chart_df = comparison.set_index("team")[["model_prob", "market_prob"]].copy()
+    chart_df.columns = ["Model", "Market"]
+    return chart_df * 100
 
 
 def format_benchmark_table(df: pd.DataFrame) -> pd.DataFrame:
@@ -372,7 +347,7 @@ with tab_market:
         comparison = benchmark["comparison"].dropna(subset=["market_prob"]).head(16).copy()
         if not comparison.empty:
             st.markdown("**Top 16 — model vs market win probability (%)**")
-            st.altair_chart(model_vs_market_chart(comparison), use_container_width=True)
+            st.bar_chart(model_vs_market_chart_data(comparison), stack=False, height=380)
 
         st.divider()
         col_all, col_edges = st.columns(2)
