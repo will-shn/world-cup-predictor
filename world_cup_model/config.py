@@ -73,7 +73,9 @@ PENALTY_WIN_RATE = {
 # Market / edge configuration
 # ---------------------------------------------------------------------------
 ODDS_API_KEY = os.environ.get("ODDS_API_KEY", "")
-ODDS_SPORT_KEY = "soccer_fifa_world_cup"
+ODDS_SPORT_KEY = "soccer_fifa_world_cup"              # H2H match odds
+OUTRIGHT_SPORT_KEY = "soccer_fifa_world_cup_winner"   # Tournament winner futures
+SAMPLE_OUTRIGHT_ODDS = os.path.join(DATA_DIR, "sample_market_outrights.json")
 EDGE_THRESHOLD = 0.05          # Min absolute probability gap to flag
 KELLY_FRACTION_DIVISOR = 4.0   # Fractional Kelly multiplier
 

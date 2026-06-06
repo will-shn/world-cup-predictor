@@ -24,11 +24,17 @@ from world_cup_model.config import (
     ELO_PRIOR_STRENGTH,
     GROUPS_2026,
     HOST_COUNTRIES,
+    KELLY_FRACTION_DIVISOR,
     N_SIMULATIONS,
     OUTPUT_DIR,
     RESULTS_CSV,
+    SAMPLE_OUTRIGHT_ODDS,
 )
 from world_cup_model.data.clean import build_clean_dataset
+from world_cup_model.evaluation.market import (
+    has_odds_api_key,
+    run_outright_benchmark,
+)
 from world_cup_model.features.ratings import (
     build_feature_matrix,
     current_team_elos,
@@ -107,6 +113,44 @@ def prob_table_to_metrics(df: pd.DataFrame, label: str) -> None:
     df["probability"] = (df["probability"] * 100).round(2)
     df.columns = ["Team", f"{label} (%)"]
     st.dataframe(df, width="stretch", hide_index=True)
+
+
+@st.cache_data(show_spinner="Comparing model to market odds…", ttl=300)
+def load_market_benchmark(
+    win_probs: dict[str, float],
+    use_live: bool,
+    odds_path: str,
+) -> dict:
+    return run_outright_benchmark(
+        win_probs,
+        odds_path=odds_path,
+        use_live=use_live,
+    )
+
+
+def format_benchmark_table(df: pd.DataFrame) -> pd.DataFrame:
+    out = df.copy()
+    for col in ("model_prob", "market_prob", "edge", "kelly", "fractional_kelly"):
+        if col in out.columns:
+            out[col] = (out[col] * 100).round(2)
+    out = out.rename(
+        columns={
+            "team": "Team",
+            "model_prob": "Model (%)",
+            "market_prob": "Market (%)",
+            "edge": "Edge (pp)",
+            "decimal_odds": "Decimal odds",
+            "kelly": "Kelly (%)",
+            "fractional_kelly": f"Frac. Kelly (÷{KELLY_FRACTION_DIVISOR:.0f}) (%)",
+            "flagged": "Flagged",
+        }
+    )
+    display_cols = [
+        "Team", "Model (%)", "Market (%)", "Edge (pp)",
+        "Decimal odds", "Kelly (%)", f"Frac. Kelly (÷{KELLY_FRACTION_DIVISOR:.0f}) (%)",
+        "Flagged",
+    ]
+    return out[[c for c in display_cols if c in out.columns]]
 
 
 # ---------------------------------------------------------------------------
@@ -222,8 +266,8 @@ else:
     c3.metric("Source", meta.get("source", "live run"))
 
 # --- Tabs ---
-tab_outlook, tab_match, tab_groups, tab_about = st.tabs(
-    ["Tournament outlook", "Match predictor", "Group draw", "About"]
+tab_outlook, tab_market, tab_match, tab_groups, tab_about = st.tabs(
+    ["Tournament outlook", "Market benchmark", "Match predictor", "Group draw", "About"]
 )
 
 with tab_outlook:
@@ -250,6 +294,76 @@ with tab_outlook:
     with m3:
         st.subheader("Advance from group")
         prob_table_to_metrics(sim_to_dataframe(sim_out, "group_advance").head(10), "Advance")
+
+with tab_market:
+    st.subheader("Model vs bookmaker outrights")
+    st.caption(
+        "Compares tournament win probabilities from the Monte Carlo sim to "
+        "vig-removed implied probabilities from outright decimal odds. "
+        "Kelly sizing uses the model probability against the offered price."
+    )
+
+    api_available = has_odds_api_key()
+    odds_source = st.radio(
+        "Odds source",
+        options=(
+            ["Live (The Odds API)"] if api_available else []
+        ) + ["Sample file (demo)"],
+        horizontal=True,
+    )
+    use_live = odds_source.startswith("Live")
+    if not api_available:
+        st.info(
+            "Set `ODDS_API_KEY` in your environment for live bookmaker odds. "
+            "Using bundled sample odds for now."
+        )
+
+    try:
+        benchmark = load_market_benchmark(
+            sim_out["win_probs"],
+            use_live=use_live,
+            odds_path=SAMPLE_OUTRIGHT_ODDS,
+        )
+    except Exception as exc:
+        st.error(f"Could not load market benchmark: {exc}")
+        benchmark = None
+
+    if benchmark:
+        metrics = benchmark["metrics"]
+        m1, m2, m3, m4, m5 = st.columns(5)
+        m1.metric("Matched teams", f"{metrics['n_matched']}/{metrics['n_model_teams']}")
+        m2.metric("MAE", f"{metrics['mae']:.3f}" if metrics["n_matched"] else "—")
+        m3.metric("Correlation", f"{metrics['correlation']:.3f}" if metrics["n_matched"] else "—")
+        m4.metric("Flagged edges", metrics["n_flagged"])
+        m5.metric("Odds source", benchmark["source"].split("/")[-1][:20])
+
+        comparison = benchmark["comparison"].dropna(subset=["market_prob"]).head(16).copy()
+        if not comparison.empty:
+            chart_df = comparison.set_index("team")[["model_prob", "market_prob"]]
+            chart_df.columns = ["Model", "Market"]
+            st.markdown("**Top 16 — model vs market win probability (%)**")
+            st.bar_chart(chart_df * 100, height=380)
+
+        st.divider()
+        col_all, col_edges = st.columns(2)
+        with col_all:
+            st.markdown("**Full comparison**")
+            st.dataframe(
+                format_benchmark_table(benchmark["comparison"]),
+                width="stretch",
+                hide_index=True,
+            )
+        with col_edges:
+            st.markdown("**Flagged edges + Kelly**")
+            flagged = benchmark["flagged_edges"]
+            if flagged.empty:
+                st.write("No edges above the configured threshold.")
+            else:
+                st.dataframe(
+                    format_benchmark_table(flagged),
+                    width="stretch",
+                    hide_index=True,
+                )
 
 with tab_match:
     st.subheader("Head-to-head probabilities")
@@ -317,6 +431,9 @@ with tab_about:
            teams with sparse data.
         5. **Monte Carlo simulation** — The full 48-team group + knockout bracket is simulated
            thousands of times to produce win / finalist / advancement probabilities.
+        6. **Market benchmark** — Model win probabilities are compared to bookmaker outright
+           odds (live via The Odds API or bundled sample data), with edge detection and
+           fractional Kelly stake sizing.
 
         ### Tech stack
 

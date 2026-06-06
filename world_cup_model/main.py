@@ -12,6 +12,9 @@ CLI flags
     --n-sims N        override config.N_SIMULATIONS
     --skip-backtest   do not run the historical backtest
     --backtest-only   skip the simulation
+    --skip-market     skip the market benchmark step
+    --market-odds PATH  JSON file of team -> decimal outright odds
+    --live-odds       fetch live odds when ODDS_API_KEY is set (default on)
     --results PATH    override the results CSV path
     --elo PATH        path to an Elo CSV (optional)
 """
@@ -25,6 +28,7 @@ import time
 from typing import Optional
 
 import pandas as pd
+import requests
 
 from world_cup_model.config import (
     DECAY_RATE,
@@ -36,10 +40,17 @@ from world_cup_model.config import (
     N_SIMULATIONS,
     OUTPUT_DIR,
     RESULTS_CSV,
+    SAMPLE_OUTRIGHT_ODDS,
 )
 from world_cup_model.data.clean import build_clean_dataset, clean_in_memory
 from world_cup_model.data.fetch import generate_synthetic_results
 from world_cup_model.evaluation.calibrate import backtest
+from world_cup_model.evaluation.market import (
+    print_benchmark_summary,
+    run_h2h_benchmark,
+    run_outright_benchmark,
+    save_benchmark_results,
+)
 from world_cup_model.features.ratings import (
     build_feature_matrix,
     current_team_elos,
@@ -178,6 +189,36 @@ def fit_and_simulate(
     return {"params": params, "sim_out": sim_out}
 
 
+def run_market_benchmark(
+    sim_out: dict,
+    params,
+    odds_path: Optional[str] = None,
+    use_live: bool = True,
+) -> Optional[dict]:
+    """Compare tournament win probabilities to bookmaker outright markets."""
+    print("\n[5/5] Market benchmark (outright winner).")
+    try:
+        benchmark = run_outright_benchmark(
+            sim_out["win_probs"],
+            odds_path=odds_path,
+            use_live=use_live,
+        )
+        print_benchmark_summary(benchmark)
+
+        h2h = run_h2h_benchmark(params)
+        if not h2h.empty:
+            print(f"\n      H2H edges from live fixtures: {len(h2h)} rows")
+            print(h2h.head(5).to_string(index=False))
+
+        out_path = os.path.join(OUTPUT_DIR, "market_benchmark.json")
+        save_benchmark_results(benchmark, out_path)
+        print(f"\n      Saved market benchmark to {out_path}")
+        return benchmark
+    except (RuntimeError, FileNotFoundError, requests.RequestException) as e:
+        print(f"      Market benchmark skipped: {e}")
+        return None
+
+
 # ---------------------------------------------------------------------------
 # CLI
 # ---------------------------------------------------------------------------
@@ -197,6 +238,14 @@ def parse_args() -> argparse.Namespace:
                    help="Skip the historical backtest step.")
     p.add_argument("--backtest-only", action="store_true",
                    help="Run only the historical backtest, no simulation.")
+    p.add_argument("--skip-market", action="store_true",
+                   help="Skip the market benchmark step (runs by default).")
+    p.add_argument("--market-odds", default=None,
+                   help=f"Path to team->odds JSON (default: {SAMPLE_OUTRIGHT_ODDS}).")
+    p.add_argument("--live-odds", action="store_true", default=True,
+                   help="Try live Odds API when ODDS_API_KEY is set.")
+    p.add_argument("--no-live-odds", action="store_false", dest="live_odds",
+                   help="Use file/sample odds only, do not call the Odds API.")
     p.add_argument("--cutoff", default="2022-11-01",
                    help="Backtest cutoff date (default: 2022 World Cup).")
     return p.parse_args()
@@ -206,9 +255,19 @@ def main() -> None:
     args = parse_args()
     df, elo_df = load_data(args.synthetic, args.results, args.elo)
 
+    pipeline_result = None
     if not args.backtest_only:
-        fit_and_simulate(df, args.n_sims, elo_df=elo_df,
-                         elo_strength=args.elo_strength)
+        pipeline_result = fit_and_simulate(df, args.n_sims, elo_df=elo_df,
+                                           elo_strength=args.elo_strength)
+
+    if pipeline_result is not None and not args.skip_market:
+        odds_path = args.market_odds or SAMPLE_OUTRIGHT_ODDS
+        run_market_benchmark(
+            pipeline_result["sim_out"],
+            pipeline_result["params"],
+            odds_path=odds_path,
+            use_live=args.live_odds,
+        )
 
     if not args.skip_backtest and not args.synthetic:
         print(f"\n[4/4] Running backtest with cutoff {args.cutoff}.")

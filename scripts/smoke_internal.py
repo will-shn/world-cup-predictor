@@ -9,7 +9,7 @@ import pandas as pd
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
-from world_cup_model.config import DECAY_RATE, GROUPS_2026
+from world_cup_model.config import DECAY_RATE, GROUPS_2026, SAMPLE_OUTRIGHT_ODDS
 from world_cup_model.data.clean import clean_in_memory
 from world_cup_model.data.fetch import generate_synthetic_results
 from world_cup_model.evaluation.calibrate import (
@@ -20,9 +20,12 @@ from world_cup_model.evaluation.calibrate import (
 from world_cup_model.evaluation.market import (
     add_kelly_column,
     compare_outright_probs,
+    compute_benchmark_metrics,
     find_edges,
     kelly_fraction,
+    load_outright_odds_from_file,
     odds_to_prob,
+    run_outright_benchmark,
 )
 from world_cup_model.model.dixon_coles import (
     fit_model,
@@ -139,6 +142,14 @@ outright = compare_outright_probs(
 )
 print("\n   outright comparison:")
 print(outright.to_string(index=False))
+assert "fractional_kelly" in outright.columns
+
+metrics = compute_benchmark_metrics(outright)
+print(f"   benchmark metrics: mae={metrics['mae']:.3f}, corr={metrics['correlation']:.3f}")
+assert metrics["n_matched"] == 3
+
+sample_odds = load_outright_odds_from_file(SAMPLE_OUTRIGHT_ODDS)
+assert len(sample_odds) >= 40
 
 # ---------------------------------------------------------------------------
 # 6. Full tournament (small)
@@ -150,6 +161,14 @@ print(f"   sim time: {time.time() - t0:.2f}s")
 total_win = sum(sim["win_probs"].values())
 print(f"   win-prob sum across 48 teams: {total_win:.3f}")
 assert abs(total_win - 1.0) < 0.001
+
+bench = run_outright_benchmark(
+    sim["win_probs"],
+    odds_path=SAMPLE_OUTRIGHT_ODDS,
+    use_live=False,
+)
+assert bench["metrics"]["n_matched"] >= 40
+print(f"   sample benchmark matched: {bench['metrics']['n_matched']} teams")
 
 # ---------------------------------------------------------------------------
 # 7. 100k sims benchmark

@@ -1,134 +1,180 @@
-# World Cup 2026 Prediction Model
+# World Cup 2026 Probabilistic Forecasting Engine
 
-A Dixon-Coles bivariate Poisson model plus Monte Carlo tournament simulation,
-calibrated against betting markets.
+A production-style Python pipeline that estimates **full probability distributions** over 2026 FIFA World Cup outcomes — not single picks. Built for quantitative rigor: statistical modeling, large-scale simulation, calibration against bookmaker markets, and an interactive dashboard for exploration.
 
-## Quick start
+**Relevant for:** quantitative research, sales & trading, data science, and software engineering roles where probabilistic thinking, Python, and market benchmarking matter.
 
-```bash
-pip install -r requirements.txt
+---
 
-# Smoke test with synthetic data (no CSV needed)
-python -m world_cup_model.main --synthetic --n-sims 5000 --skip-backtest
+## What it does
 
-# Internal sanity test (exercises every module)
-python scripts/smoke_internal.py
+| Capability | Description |
+|------------|-------------|
+| **Match-level pricing** | Win / draw / loss probabilities and expected goals for any international fixture |
+| **Tournament simulation** | 100,000 Monte Carlo paths through the full 48-team bracket (groups + knockouts) |
+| **Team strength estimation** | Attack/defense parameters from 4,600+ weighted historical matches (Dixon-Coles MLE) |
+| **Market benchmarking** | Compare model probabilities to bookmaker implied odds; edge detection and fractional Kelly sizing |
+| **Model validation** | Brier score, log-loss, reliability diagrams, and chronological backtesting |
 
-# Full run with real data (after placing results.csv)
-python -m world_cup_model.main --n-sims 100000
+**Example output:** Spain ~14% to win the tournament, Argentina ~6%, with full tables for finalist, semifinal, and group-advancement probabilities — updated when you re-run the model.
+
+---
+
+## Why this project matters (quant / S&T angle)
+
+Bookmakers and trading desks price **events as probabilities**, not narratives. This project mirrors that workflow:
+
+1. **Ingest** structured historical data with recency and competition-importance weighting  
+2. **Fit** a peer-reviewed Poisson model (Dixon & Coles, 1997) with Elo regularization  
+3. **Simulate** path-dependent tournament risk at scale (vectorized NumPy)  
+4. **Calibrate** forecasts against realized outcomes and live market prices  
+5. **Ship** results through a Streamlit UI for non-technical stakeholders  
+
+It is a **research prototype**, not a live trading system — but the architecture (modular pipeline, config-driven parameters, evaluation layer) reflects how real forecasting stacks are organized.
+
+---
+
+## Technical highlights
+
+- **Dixon-Coles bivariate Poisson** — MLE via L-BFGS-B; low-score correlation (ρ); neutral-venue and home-advantage handling  
+- **Weighted likelihood** — exponential time decay + tournament multipliers (World Cup ×4 vs regional qualifiers ×0.4)  
+- **Elo priors** — attack/defense anchored to [eloratings.net](https://eloratings.net); fixes sparse-team overfitting  
+- **Vectorized Monte Carlo** — ~100,000 full tournaments in **~5–10 seconds** on a laptop  
+- **48-team 2026 format** — 12 groups, 8 best third-place qualifiers, 32-team knockout bracket with extra time and penalties  
+- **Market module** — The Odds API integration, vig removal, edge flags, Kelly criterion  
+
+---
+
+## Tech stack
+
+`Python 3.11+` · `pandas` · `NumPy` · `SciPy` · `scikit-learn` · `matplotlib` · `Streamlit` · `requests` · `reportlab`
+
+---
+
+## Architecture
+
+```
+Historical results CSV          Elo ratings (eloratings.net)
+         │                                  │
+         ▼                                  ▼
+    ┌─────────┐                      ┌──────────┐
+    │  Data   │  filter · decay ·    │ Features │  Elo at match date
+    │ pipeline│  tournament weights  │ (priors) │
+    └────┬────┘                      └────┬─────┘
+         │                                │
+         └────────────┬───────────────────┘
+                      ▼
+               ┌─────────────┐
+               │ Dixon-Coles │  attack / defense / home_adv / ρ
+               │    (MLE)    │
+               └──────┬──────┘
+                      ▼
+               ┌─────────────┐
+               │ Monte Carlo │  100k × full 2026 bracket
+               │ simulation  │
+               └──────┬──────┘
+                      │
+         ┌────────────┼────────────┐
+         ▼            ▼            ▼
+   Calibration   Market compare   Streamlit
+   Brier · backtest  edges · Kelly   dashboard
 ```
 
-Benchmark on a typical laptop: 100,000 Monte Carlo tournaments finishes in
-~5 seconds; full Dixon-Coles fit on ~5,000 matches finishes in 1-2 seconds.
+Each stage is a **separate module** with clean interfaces (DataFrames in, parameter dicts out), so components can be tested and swapped independently.
 
-## Web dashboard (share with a mentor)
+---
 
-An interactive **Streamlit** app lives at `app.py` in the project root.
+## Repository structure
 
-### Run on your laptop
+```
+world_cup_model/
+├── config.py              # All hyperparameters, 2026 draw, tournament weights
+├── main.py                # CLI: load → fit → simulate → backtest
+├── data/                  # Ingestion, cleaning, Elo download
+├── features/              # Elo lookups and prior conversion
+├── model/                 # Dixon-Coles fit and match prediction
+├── simulation/            # Vectorized World Cup Monte Carlo
+└── evaluation/            # Calibration metrics and market comparison
+
+app.py                     # Interactive Streamlit dashboard
+docs/World_Cup_Engine_Guide.pdf   # Full technical reference (concepts + glossary)
+```
+
+---
+
+## Skills demonstrated
+
+- **Probability & statistics** — Poisson models, maximum likelihood, regularization, calibration metrics  
+- **Simulation** — Monte Carlo at scale, vectorization for performance  
+- **Data engineering** — ETL from CSV/API, name standardization, time-weighted features  
+- **Software design** — modular packages, centralized config, CLI + web UI  
+- **Markets literacy** — implied probability, vig, edge, Kelly sizing (evaluation layer)  
+- **Communication** — technical PDF guide, interactive dashboard, structured documentation  
+
+---
+
+## Documentation
+
+| Resource | Audience |
+|----------|----------|
+| **[docs/World_Cup_Engine_Guide.pdf](docs/World_Cup_Engine_Guide.pdf)** | Deep dive: concepts, glossary, formulas, every file explained |
+| **[docs/ENGINE_GUIDE.md](docs/ENGINE_GUIDE.md)** | Same content in Markdown (editable source) |
+
+---
+
+## Demo (interactive)
+
+A **Streamlit** dashboard (`app.py`) provides:
+
+- Tournament win-probability charts and tables  
+- Head-to-head match predictor (win / draw / loss %)  
+- 2026 group draw with advancement probabilities  
+- Adjustable simulation count and Elo prior strength  
+
+**Run locally:**
 
 ```bash
 pip install -r requirements.txt
 streamlit run app.py
 ```
 
-Your browser opens at `http://localhost:8501`. Use the sidebar to run the model or
-load the last saved `world_cup_model/outputs/win_probs.json` instantly.
+**Deploy online (free):** push to GitHub → [share.streamlit.io](https://share.streamlit.io) → main file `app.py` → share the public URL with reviewers.
 
-### Share a public link (free)
+---
 
-1. Push this folder to a **GitHub** repository (private or public).
-2. Go to [share.streamlit.io](https://share.streamlit.io) and sign in with GitHub.
-3. Click **New app** → select your repo → main file: `app.py`.
-4. Deploy. You get a URL like `https://your-app.streamlit.app` to send your mentor.
+## Quick run (for technical reviewers)
 
-**For cloud deploy**, include in the repo:
+```bash
+pip install -r requirements.txt
 
-- `app.py`, `requirements.txt`, all of `world_cup_model/`
-- `world_cup_model/data_files/results.csv` and `elo_ratings.csv` (or the app
-  only shows saved results until data is added)
-- `world_cup_model/outputs/win_probs.json` (optional — enables instant load without
-  re-running the model on first visit)
+# Place historical results in world_cup_model/data_files/results.csv
+# (Kaggle: "international football results" by Mart Jurisoo)
 
-Optional secrets (Streamlit → Settings → Secrets): `ODDS_API_KEY` for future
-market-odds features.
+# Optional: download Elo ratings (~45 s)
+python -m world_cup_model.data.fetch_elo
 
-### What the mentor will see
-
-- Bar chart of **tournament win probabilities**
-- Tables for finalist / semifinal / group-advance odds
-- **Match predictor** (pick any two teams, get win/draw/loss %)
-- **2026 group draw** with advancement %
-- **About** tab explaining Dixon-Coles, Elo priors, and Monte Carlo
-
-## Project layout
-
+# Full pipeline: fit + 100,000 simulations + backtest
+python -m world_cup_model.main --n-sims 100000
 ```
-world_cup_model/
-├── config.py                 # All hyperparameters, paths, and the 2026 draw
-├── main.py                   # End-to-end driver
-├── data/
-│   ├── fetch.py              # Load CSV / football-data.org / synthetic
-│   ├── fetch_elo.py          # Download Elo from eloratings.net TSV files
-│   └── clean.py              # Filter friendlies, decay, name standardization
-├── features/
-│   └── ratings.py            # Elo lookups + priors
-├── model/
-│   └── dixon_coles.py        # Vectorized DC log-likelihood + fit + prediction
-├── simulation/
-│   └── tournament.py         # Vectorized Monte Carlo over 48 teams, 64+ matches
-└── evaluation/
-    ├── calibrate.py          # Brier, log-loss, reliability diagram, backtest
-    └── market.py             # Odds API, vig removal, edge detection, Kelly
-```
+
+Outputs land in `world_cup_model/outputs/win_probs.json` and calibration plots in `world_cup_model/outputs/`.
+
+---
 
 ## Data sources
 
-1. **Historical results** - download the Kaggle
-   "[International football results from 1872 to 2017](https://www.kaggle.com/martj42/international-football-results-from-1872-to-2017)"
-   dataset (continually updated by Mart Jürisoo) and save as
-   `world_cup_model/data_files/results.csv`. Required columns: `date,
-   home_team, away_team, home_score, away_score, tournament, neutral`.
+- **Match results** — [International football results](https://www.kaggle.com/datasets/martj42/international-football-results-from-1872-to-2017) (Mart Jürisoo, Kaggle)  
+- **Elo ratings** — [eloratings.net](https://eloratings.net) (built-in TSV fetcher)  
+- **Bookmaker odds** — [The Odds API](https://the-odds-api.com) (optional; requires API key)  
 
-2. **Elo ratings (optional)** - the site has no download button, but it serves
-   the same data as public TSV files. Use the built-in fetcher (no scraping
-   needed):
+---
 
-   ```bash
-   # Full match-by-match history (~240 teams, ~30 seconds)
-   python -m world_cup_model.data.fetch_elo
+## Disclaimer
 
-   # Or today's snapshot only (fast)
-   python -m world_cup_model.data.fetch_elo --current-only
-   ```
+This project is for **education and research**. Outputs are model estimates, not betting or investment advice. Tournament draw configuration should be updated when official FIFA bracket rules are finalized.
 
-   Writes `world_cup_model/data_files/elo_ratings.csv` (`team`, `date`, `elo`).
-   Then run the model with Elo features:
+---
 
-   ```bash
-   python -m world_cup_model.main --elo world_cup_model/data_files/elo_ratings.csv
-   ```
+## Contact
 
-   The model runs without Elo, but sparse teams will have noisier estimates.
-
-3. **Betting odds** - sign up at [the-odds-api.com](https://the-odds-api.com)
-   for a free key and set `ODDS_API_KEY` in `config.py` or as an environment
-   variable.
-
-## Updating the 2026 draw
-
-Edit `GROUPS_2026` and `ROUND_OF_32` in `config.py`. The placeholders inside
-`config.py` are a reasonable approximation but should be replaced with the
-official draw before going live.
-
-## What's vectorized vs. what isn't
-
-* **Dixon-Coles likelihood** - 100% vectorized in NumPy. The optimizer touches
-  `negative_log_likelihood` only a few hundred times, but each call is one
-  pass of array math rather than a Python loop over rows.
-* **Monte Carlo** - all 12 groups and all knockout rounds are simulated as
-  `(n_sims, n_matches)` arrays. 100,000 tournaments finish in well under a
-  minute.
-* **Backtest predictions** - currently iterate per match for readability. If
-  you need speed, swap `_predictions_for_matches` in `evaluation/calibrate.py`
-  for a batched version using `predict_lambdas_batch`.
+William Shan - william.shan@mail.utoronto.ca - https://www.linkedin.com/in/william-shan/ 

@@ -1,0 +1,518 @@
+{
+  "source": "C:\\Users\\willi\\OneDrive - University of Toronto\\Vibe Coding Projects\\World Cup Simulator\\world_cup_model\\data_files\\sample_market_outrights.json",
+  "metrics": {
+    "n_model_teams": 48,
+    "n_matched": 48,
+    "n_flagged": 2,
+    "mae": 0.01963802140126134,
+    "rmse": 0.024935140522759525,
+    "correlation": -0.09393506292397906,
+    "mean_edge": -1.4456028966473393e-18,
+    "max_positive_edge": 0.0361799727927282,
+    "max_negative_edge": -0.06900136036358989
+  },
+  "comparison": [
+    {
+      "team": "Canada",
+      "model_prob": 0.042,
+      "market_prob": 0.013237,
+      "edge": 0.028763,
+      "decimal_odds": 55.0,
+      "kelly": 0.024259,
+      "fractional_kelly": 0.006065,
+      "flagged": false
+    },
+    {
+      "team": "Cape Verde",
+      "model_prob": 0.038,
+      "market_prob": 0.002912,
+      "edge": 0.035088,
+      "decimal_odds": 250.0,
+      "kelly": 0.034137,
+      "fractional_kelly": 0.008534,
+      "flagged": false
+    },
+    {
+      "team": "Democratic Republic of the Congo",
+      "model_prob": 0.038,
+      "market_prob": 0.00182,
+      "edge": 0.03618,
+      "decimal_odds": 400.0,
+      "kelly": 0.035589,
+      "fractional_kelly": 0.008897,
+      "flagged": false
+    },
+    {
+      "team": "Uzbekistan",
+      "model_prob": 0.036,
+      "market_prob": 0.004282,
+      "edge": 0.031718,
+      "decimal_odds": 170.0,
+      "kelly": 0.030296,
+      "fractional_kelly": 0.007574,
+      "flagged": false
+    },
+    {
+      "team": "South Africa",
+      "model_prob": 0.032,
+      "market_prob": 0.003309,
+      "edge": 0.028691,
+      "decimal_odds": 220.0,
+      "kelly": 0.02758,
+      "fractional_kelly": 0.006895,
+      "flagged": false
+    },
+    {
+      "team": "Iran",
+      "model_prob": 0.028,
+      "market_prob": 0.00728,
+      "edge": 0.02072,
+      "decimal_odds": 100.0,
+      "kelly": 0.018182,
+      "fractional_kelly": 0.004545,
+      "flagged": false
+    },
+    {
+      "team": "Mexico",
+      "model_prob": 0.028,
+      "market_prob": 0.0182,
+      "edge": 0.0098,
+      "decimal_odds": 40.0,
+      "kelly": 0.003077,
+      "fractional_kelly": 0.000769,
+      "flagged": false
+    },
+    {
+      "team": "Saudi Arabia",
+      "model_prob": 0.028,
+      "market_prob": 0.0028,
+      "edge": 0.0252,
+      "decimal_odds": 260.0,
+      "kelly": 0.024247,
+      "fractional_kelly": 0.006062,
+      "flagged": false
+    },
+    {
+      "team": "USA",
+      "model_prob": 0.028,
+      "market_prob": 0.01456,
+      "edge": 0.01344,
+      "decimal_odds": 50.0,
+      "kelly": 0.008163,
+      "fractional_kelly": 0.002041,
+      "flagged": false
+    },
+    {
+      "team": "Morocco",
+      "model_prob": 0.026,
+      "market_prob": 0.036401,
+      "edge": -0.010401,
+      "decimal_odds": 20.0,
+      "kelly": -0.025263,
+      "fractional_kelly": 0.0,
+      "flagged": false
+    },
+    {
+      "team": "England",
+      "model_prob": 0.026,
+      "market_prob": 0.08089,
+      "edge": -0.05489,
+      "decimal_odds": 9.0,
+      "kelly": -0.09575,
+      "fractional_kelly": 0.0,
+      "flagged": true
+    },
+    {
+      "team": "Panama",
+      "model_prob": 0.026,
+      "market_prob": 0.003832,
+      "edge": 0.022168,
+      "decimal_odds": 190.0,
+      "kelly": 0.020847,
+      "fractional_kelly": 0.005212,
+      "flagged": false
+    },
+    {
+      "team": "Paraguay",
+      "model_prob": 0.026,
+      "market_prob": 0.0091,
+      "edge": 0.0169,
+      "decimal_odds": 80.0,
+      "kelly": 0.013671,
+      "fractional_kelly": 0.003418,
+      "flagged": false
+    },
+    {
+      "team": "Sweden",
+      "model_prob": 0.024,
+      "market_prob": 0.003467,
+      "edge": 0.020533,
+      "decimal_odds": 210.0,
+      "kelly": 0.01933,
+      "fractional_kelly": 0.004833,
+      "flagged": false
+    },
+    {
+      "team": "France",
+      "model_prob": 0.024,
+      "market_prob": 0.072801,
+      "edge": -0.048801,
+      "decimal_odds": 10.0,
+      "kelly": -0.084444,
+      "fractional_kelly": 0.0,
+      "flagged": false
+    },
+    {
+      "team": "Austria",
+      "model_prob": 0.022,
+      "market_prob": 0.0112,
+      "edge": 0.0108,
+      "decimal_odds": 65.0,
+      "kelly": 0.006719,
+      "fractional_kelly": 0.00168,
+      "flagged": false
+    },
+    {
+      "team": "Uruguay",
+      "model_prob": 0.022,
+      "market_prob": 0.02275,
+      "edge": -0.00075,
+      "decimal_odds": 32.0,
+      "kelly": -0.009548,
+      "fractional_kelly": 0.0,
+      "flagged": false
+    },
+    {
+      "team": "Egypt",
+      "model_prob": 0.022,
+      "market_prob": 0.008089,
+      "edge": 0.013911,
+      "decimal_odds": 90.0,
+      "kelly": 0.011011,
+      "fractional_kelly": 0.002753,
+      "flagged": false
+    },
+    {
+      "team": "Czech Republic",
+      "model_prob": 0.022,
+      "market_prob": 0.0052,
+      "edge": 0.0168,
+      "decimal_odds": 140.0,
+      "kelly": 0.014964,
+      "fractional_kelly": 0.003741,
+      "flagged": false
+    },
+    {
+      "team": "Ecuador",
+      "model_prob": 0.022,
+      "market_prob": 0.028,
+      "edge": -0.006,
+      "decimal_odds": 26.0,
+      "kelly": -0.01712,
+      "fractional_kelly": 0.0,
+      "flagged": false
+    },
+    {
+      "team": "Norway",
+      "model_prob": 0.022,
+      "market_prob": 0.033091,
+      "edge": -0.011091,
+      "decimal_odds": 22.0,
+      "kelly": -0.024571,
+      "fractional_kelly": 0.0,
+      "flagged": false
+    },
+    {
+      "team": "Spain",
+      "model_prob": 0.022,
+      "market_prob": 0.091001,
+      "edge": -0.069001,
+      "decimal_odds": 8.0,
+      "kelly": -0.117714,
+      "fractional_kelly": 0.0,
+      "flagged": true
+    },
+    {
+      "team": "Senegal",
+      "model_prob": 0.02,
+      "market_prob": 0.026,
+      "edge": -0.006,
+      "decimal_odds": 28.0,
+      "kelly": -0.016296,
+      "fractional_kelly": 0.0,
+      "flagged": false
+    },
+    {
+      "team": "Curacao",
+      "model_prob": 0.02,
+      "market_prob": 0.002427,
+      "edge": 0.017573,
+      "decimal_odds": 300.0,
+      "kelly": 0.016722,
+      "fractional_kelly": 0.004181,
+      "flagged": false
+    },
+    {
+      "team": "Belgium",
+      "model_prob": 0.02,
+      "market_prob": 0.017334,
+      "edge": 0.002666,
+      "decimal_odds": 42.0,
+      "kelly": -0.003902,
+      "fractional_kelly": 0.0,
+      "flagged": false
+    },
+    {
+      "team": "Portugal",
+      "model_prob": 0.02,
+      "market_prob": 0.045501,
+      "edge": -0.025501,
+      "decimal_odds": 16.0,
+      "kelly": -0.045333,
+      "fractional_kelly": 0.0,
+      "flagged": false
+    },
+    {
+      "team": "Tunisia",
+      "model_prob": 0.018,
+      "market_prob": 0.004045,
+      "edge": 0.013955,
+      "decimal_odds": 180.0,
+      "kelly": 0.012514,
+      "fractional_kelly": 0.003128,
+      "flagged": false
+    },
+    {
+      "team": "Jordan",
+      "model_prob": 0.018,
+      "market_prob": 0.00455,
+      "edge": 0.01345,
+      "decimal_odds": 160.0,
+      "kelly": 0.011824,
+      "fractional_kelly": 0.002956,
+      "flagged": false
+    },
+    {
+      "team": "Brazil",
+      "model_prob": 0.018,
+      "market_prob": 0.066183,
+      "edge": -0.048183,
+      "decimal_odds": 11.0,
+      "kelly": -0.0802,
+      "fractional_kelly": 0.0,
+      "flagged": false
+    },
+    {
+      "team": "Colombia",
+      "model_prob": 0.018,
+      "market_prob": 0.040445,
+      "edge": -0.022445,
+      "decimal_odds": 18.0,
+      "kelly": -0.039765,
+      "fractional_kelly": 0.0,
+      "flagged": false
+    },
+    {
+      "team": "Switzerland",
+      "model_prob": 0.018,
+      "market_prob": 0.024267,
+      "edge": -0.006267,
+      "decimal_odds": 30.0,
+      "kelly": -0.015862,
+      "fractional_kelly": 0.0,
+      "flagged": false
+    },
+    {
+      "team": "Algeria",
+      "model_prob": 0.016,
+      "market_prob": 0.0056,
+      "edge": 0.0104,
+      "decimal_odds": 130.0,
+      "kelly": 0.008372,
+      "fractional_kelly": 0.002093,
+      "flagged": false
+    },
+    {
+      "team": "Japan",
+      "model_prob": 0.016,
+      "market_prob": 0.030334,
+      "edge": -0.014334,
+      "decimal_odds": 24.0,
+      "kelly": -0.026783,
+      "fractional_kelly": 0.0,
+      "flagged": false
+    },
+    {
+      "team": "Ghana",
+      "model_prob": 0.016,
+      "market_prob": 0.003033,
+      "edge": 0.012967,
+      "decimal_odds": 240.0,
+      "kelly": 0.011883,
+      "fractional_kelly": 0.002971,
+      "flagged": false
+    },
+    {
+      "team": "Australia",
+      "model_prob": 0.016,
+      "market_prob": 0.012134,
+      "edge": 0.003866,
+      "decimal_odds": 60.0,
+      "kelly": -0.000678,
+      "fractional_kelly": 0.0,
+      "flagged": false
+    },
+    {
+      "team": "Argentina",
+      "model_prob": 0.014,
+      "market_prob": 0.060668,
+      "edge": -0.046668,
+      "decimal_odds": 12.0,
+      "kelly": -0.075636,
+      "fractional_kelly": 0.0,
+      "flagged": false
+    },
+    {
+      "team": "Qatar",
+      "model_prob": 0.014,
+      "market_prob": 0.001453,
+      "edge": 0.012547,
+      "decimal_odds": 501.0,
+      "kelly": 0.012028,
+      "fractional_kelly": 0.003007,
+      "flagged": false
+    },
+    {
+      "team": "Scotland",
+      "model_prob": 0.014,
+      "market_prob": 0.006067,
+      "edge": 0.007933,
+      "decimal_odds": 120.0,
+      "kelly": 0.005714,
+      "fractional_kelly": 0.001429,
+      "flagged": false
+    },
+    {
+      "team": "Germany",
+      "model_prob": 0.014,
+      "market_prob": 0.056001,
+      "edge": -0.042001,
+      "decimal_odds": 13.0,
+      "kelly": -0.068167,
+      "fractional_kelly": 0.0,
+      "flagged": false
+    },
+    {
+      "team": "Haiti",
+      "model_prob": 0.014,
+      "market_prob": 0.004853,
+      "edge": 0.009147,
+      "decimal_odds": 150.0,
+      "kelly": 0.007383,
+      "fractional_kelly": 0.001846,
+      "flagged": false
+    },
+    {
+      "team": "Ivory Coast",
+      "model_prob": 0.014,
+      "market_prob": 0.006618,
+      "edge": 0.007382,
+      "decimal_odds": 110.0,
+      "kelly": 0.004954,
+      "fractional_kelly": 0.001239,
+      "flagged": false
+    },
+    {
+      "team": "New Zealand",
+      "model_prob": 0.014,
+      "market_prob": 0.00364,
+      "edge": 0.01036,
+      "decimal_odds": 200.0,
+      "kelly": 0.009045,
+      "fractional_kelly": 0.002261,
+      "flagged": false
+    },
+    {
+      "team": "Netherlands",
+      "model_prob": 0.012,
+      "market_prob": 0.052001,
+      "edge": -0.040001,
+      "decimal_odds": 14.0,
+      "kelly": -0.064,
+      "fractional_kelly": 0.0,
+      "flagged": false
+    },
+    {
+      "team": "Iraq",
+      "model_prob": 0.012,
+      "market_prob": 0.003165,
+      "edge": 0.008835,
+      "decimal_odds": 230.0,
+      "kelly": 0.007686,
+      "fractional_kelly": 0.001921,
+      "flagged": false
+    },
+    {
+      "team": "South Korea",
+      "model_prob": 0.012,
+      "market_prob": 0.0104,
+      "edge": 0.0016,
+      "decimal_odds": 70.0,
+      "kelly": -0.002319,
+      "fractional_kelly": 0.0,
+      "flagged": false
+    },
+    {
+      "team": "Bosnia and Herzegovina",
+      "model_prob": 0.01,
+      "market_prob": 0.00208,
+      "edge": 0.00792,
+      "decimal_odds": 350.0,
+      "kelly": 0.007163,
+      "fractional_kelly": 0.001791,
+      "flagged": false
+    },
+    {
+      "team": "Croatia",
+      "model_prob": 0.01,
+      "market_prob": 0.016178,
+      "edge": -0.006178,
+      "decimal_odds": 45.0,
+      "kelly": -0.0125,
+      "fractional_kelly": 0.0,
+      "flagged": false
+    },
+    {
+      "team": "Turkey",
+      "model_prob": 0.008,
+      "market_prob": 0.0208,
+      "edge": -0.0128,
+      "decimal_odds": 35.0,
+      "kelly": -0.021176,
+      "fractional_kelly": 0.0,
+      "flagged": false
+    }
+  ],
+  "flagged_edges": [
+    {
+      "team": "England",
+      "model_prob": 0.026,
+      "market_prob": 0.08089,
+      "edge": -0.05489,
+      "decimal_odds": 9.0,
+      "kelly": -0.09575,
+      "fractional_kelly": 0.0,
+      "flagged": true
+    },
+    {
+      "team": "Spain",
+      "model_prob": 0.022,
+      "market_prob": 0.091001,
+      "edge": -0.069001,
+      "decimal_odds": 8.0,
+      "kelly": -0.117714,
+      "fractional_kelly": 0.0,
+      "flagged": true
+    }
+  ]
+}
